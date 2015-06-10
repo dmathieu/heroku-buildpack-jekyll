@@ -21,5 +21,6 @@ class StaticConfig
 end
 
 config = StaticConfig.new(USER_CONFIG)
+puts config.jekyll_options.inspect
 site = ::Jekyll::Site.new(::Jekyll.configuration(config.jekyll_options))
 site.process
