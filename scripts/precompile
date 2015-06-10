@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+require 'jekyll'
+USER_CONFIG  = 'static.json'
+
+class StaticConfig
+
+  def initialize(json_file)
+    @json = {}
+    @json = JSON.parse(File.read(json_file)) if File.exist?(json_file)
+    @json['jekyll'] ||= {source: './'}
+    @json['root'] ||= 'public_html/'
+  end
+
+  def jekyll_options
+    @json['jekyll'].merge({
+      destination: @json['root']
+    })
+  end
+end
+
+config = StaticConfig.new(USER_CONFIG)
+site = ::Jekyll::Site.new(::Jekyll.configuration(config.jekyll_options))
+site.process
