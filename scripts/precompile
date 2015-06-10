@@ -7,7 +7,9 @@ class StaticConfig
   def initialize(json_file)
     @json = {}
     @json = JSON.parse(File.read(json_file)) if File.exist?(json_file)
-    @json['jekyll'] ||= {source: './'}
+    @json['jekyll'] ||= {
+      source: ENV['bp_dir']
+    }
     @json['root'] ||= 'public_html/'
   end
 
