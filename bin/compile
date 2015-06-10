@@ -3,5 +3,5 @@
 
 bp_dir=$(dirname $(dirname $0))
 
-gem install jekyll
+gem install jekyll therubyracer
 $bp_dir/scripts/precompile
