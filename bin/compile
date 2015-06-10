@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # bin/compile <build-dir> <cache-dir> <env-dir>
 
+bp_dir=$(dirname $(dirname $0))
+
 gem install jekyll
 $bp_dir/scripts/precompile
