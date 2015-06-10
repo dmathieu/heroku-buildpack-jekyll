@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'jekyll'
-USER_CONFIG  = "#{$bp_dir}/static.json"
+USER_CONFIG  = "#{$build_dir}/static.json"
 
 class StaticConfig
 
@@ -8,14 +8,14 @@ class StaticConfig
     @json = {}
     @json = JSON.parse(File.read(json_file)) if File.exist?(json_file)
     @json['jekyll'] ||= {
-      'source' => ENV['bp_dir']
+      'source' => ENV['build_dir']
     }
     @json['root'] ||= 'public_html/'
   end
 
   def jekyll_options
     @json['jekyll'].merge({
-      'destination' => @json['root']
+      'destination' => "#{ENV['build_dir']}/#{@json['root']}"
     })
   end
 end

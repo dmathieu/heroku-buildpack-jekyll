@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # bin/compile <build-dir> <cache-dir> <env-dir>
 
+export build_dir=$1
 export bp_dir=$(dirname $(dirname $0))
 
 gem install jekyll therubyracer --no-ri --no-rdoc
