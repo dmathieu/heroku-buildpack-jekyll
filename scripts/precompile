@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'jekyll'
-USER_CONFIG  = "#{$build_dir}/static.json"
+USER_CONFIG  = "#{ENV['build_dir']}/static.json"
 
 class StaticConfig
 
