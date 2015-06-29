@@ -2,7 +2,9 @@
 # bin/compile <build-dir> <cache-dir> <env-dir>
 
 export build_dir=$1
+export cache_dir=$2
 export bp_dir=$(dirname $(dirname $0))
 
-gem install jekyll therubyracer --no-ri --no-rdoc
-$bp_dir/scripts/precompile
+bundle install --path $cache_dir
+
+bundle exec $bp_dir/scripts/precompile
