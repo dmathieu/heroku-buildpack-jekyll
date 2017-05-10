@@ -7,6 +7,7 @@ export bp_dir=$(dirname $(dirname $0))
 
 export GEM_HOME=$bp_dir/vendor/gems
 export GEM_PATH=$bp_dir/vendor/gems
+export PATH=$PATH:$bp_dir/vendor/gems/bin
 
 gem install bundler
 bundle install --path $cache_dir
