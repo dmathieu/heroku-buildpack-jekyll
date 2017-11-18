@@ -6,37 +6,34 @@ set -e
 # fail if pipe to indent fails
 set -o pipefail
 
-BUILDPACK_DIR=`cd $(dirname $0); cd ..; pwd`
 BUILD_DIR=$1
 CACHE_DIR=$2
-
-SITE_DIR=$CACHE_DIR/site
 OUTPUT_DIR=$CACHE_DIR/site/output
-GEM_DIR=$CACHE_DIR/vendor/bundle
 
-indent() { sed 's/^/  /'; }
+# Work in the build directory
+cd $BUILD_DIR
 
-# include .files when moving things around
-shopt -s dotglob
+# Set HOME to build directory in order to get the bundle command in the PATH
+HOME_BACK=$HOME
+export HOME=$1
 
-export HOME=/app
+# Source in all the profile stuff
+for profile in ./.profile.d/*; do
+  . ${profile}
+done
 
-cd "${HOME}"
-
-if [[ -d ".profile.d" ]]; then
-  for file in .profile.d/*; do
-    source "${file}"
+# If there is an env dir, source it
+if [ -d "$3" ]; then
+  for e in $(ls $3); do
+    export "$e=$(cat $3/$e)"
+    :
   done
 fi
 
-# Reset shell hash tables so the path to executable is not cached
-hash -r
+# Set HOME back to default value
+export HOME=$HOME_BACK
 
-cd $BUILD_DIR
-
-echo "-----> Installing gems for nanoc site"
-
-bundle install
+indent() { sed -u 's/^/       /'; }
 
 echo "-----> Compiling nanoc site"
 
