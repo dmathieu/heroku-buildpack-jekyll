@@ -13,7 +13,8 @@ Create a new app:
 
 Add the two buildpacks:
 
-> heroku buildpacks:set https://github.com/ably-forks/heroku-buildpack-nanoc
-> heroku buildpacks:add https://github.com/hone/heroku-buildpack-static
+> heroku buildpacks:set https://github.com/heroku/heroku-buildpack-ruby
+> heroku buildpacks:add https://github.com/ably-forks/heroku-buildpack-nanoc
+> heroku buildpacks:add https://github.com/heroku/heroku-buildpack-static
 
 Push your nanoc code to this new app.

@@ -14,12 +14,25 @@ SITE_DIR=$CACHE_DIR/site
 OUTPUT_DIR=$CACHE_DIR/site/output
 GEM_DIR=$CACHE_DIR/vendor/bundle
 
+indent() { sed 's/^/  /'; }
+
 # include .files when moving things around
 shopt -s dotglob
 
-cd $BUILD_DIR
+export HOME=/app
 
-source "/app/.profile.d/ruby.sh"
+cd "${HOME}"
+
+if [[ -d ".profile.d" ]]; then
+  for file in .profile.d/*; do
+    source "${file}"
+  done
+fi
+
+# Reset shell hash tables so the path to executable is not cached
+hash -r
+
+cd $BUILD_DIR
 
 echo "-----> Installing gems for nanoc site"
 
