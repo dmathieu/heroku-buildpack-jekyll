@@ -1,15 +1,41 @@
 #!/usr/bin/env bash
-# bin/compile <build-dir> <cache-dir> <env-dir>
+# bin/compile <build-dir> <cache-dir>
 
-export build_dir=$1
-export cache_dir=$2
-export bp_dir=$(dirname $(dirname $0))
+# fail fast
+set -e
+# fail if pipe to indent fails
+set -o pipefail
 
-export GEM_HOME=$bp_dir/vendor/gems
-export GEM_PATH=$bp_dir/vendor/gems
-export PATH=$PATH:$bp_dir/vendor/gems/bin
+BUILDPACK_DIR=`cd $(dirname $0); cd ..; pwd`
+BUILD_DIR=$1
+CACHE_DIR=$2
 
-gem install bundler
-bundle install --path $cache_dir
+SITE_DIR=$CACHE_DIR/site
+OUTPUT_DIR=$CACHE_DIR/site/output
+GEM_DIR=$CACHE_DIR/vendor/bundle
 
-bundle exec $bp_dir/scripts/precompile
+# include .files when moving things around
+shopt -s dotglob
+
+cd $BUILD_DIR
+
+source "/app/.profile.d/ruby.sh"
+
+echo "-----> Installing gems for nanoc site"
+
+bundle install
+
+echo "-----> Compiling nanoc site"
+
+# go go gadget nanoc!
+bundle exec nanoc compile | indent
+
+# and copy it back
+cp -r $OUTPUT_DIR $BUILD_DIR/output
+
+# set up nanoc config
+cat << EOF >> $BUILD_DIR/static.json
+{
+  "root": "output/"
+}
+EOF

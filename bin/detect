@@ -1,11 +1,13 @@
-#!/usr/bin/env bash
-# bin/detect <build-dir>
+#!/bin/sh
 
-build_dir=$1
-
-if [ ! -f "$build_dir/static.json" ] && [ ! -f "$build_dir/_config.yml" ]; then
-    exit 1
+# this pack is valid for apps with nanoc.yaml (or config.yaml) and Rules in the root
+if [ -f "$1/nanoc.yaml" -o -f "$1/config.yaml" ]; then
+  for file in Rules rules Rules.rb rules.rb; do
+    if [ -f "$1/$file" ]; then
+      echo "nanoc"
+      exit 0
+    fi
+  done
 fi
 
-echo 'Static Jekyll'
-exit 0
+exit 1
