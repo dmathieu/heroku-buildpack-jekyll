@@ -1,15 +1,46 @@
 #!/usr/bin/env bash
-# bin/compile <build-dir> <cache-dir> <env-dir>
+# bin/compile <build-dir> <cache-dir>
 
-export build_dir=$1
-export cache_dir=$2
-export bp_dir=$(dirname $(dirname $0))
+# fail fast
+set -e
+# fail if pipe to indent fails
+set -o pipefail
 
-export GEM_HOME=$bp_dir/vendor/gems
-export GEM_PATH=$bp_dir/vendor/gems
-export PATH=$PATH:$bp_dir/vendor/gems/bin
+BUILD_DIR=$1
 
-gem install bundler
-bundle install --path $cache_dir
+# Work in the build directory
+cd $BUILD_DIR
 
-bundle exec $bp_dir/scripts/precompile
+# Set HOME to build directory in order to get the bundle command in the PATH
+HOME_BACK=$HOME
+export HOME=$1
+
+# Source in all the profile stuff
+for profile in ./.profile.d/*; do
+  . ${profile}
+done
+
+# If there is an env dir, source it
+if [ -d "$3" ]; then
+  for e in $(ls $3); do
+    export "$e=$(cat $3/$e)"
+    :
+  done
+fi
+
+# Set HOME back to default value
+export HOME=$HOME_BACK
+
+indent() { sed -u 's/^/       /'; }
+
+echo "-----> Compiling nanoc site"
+
+# go go gadget nanoc!
+bundle exec nanoc compile | indent
+
+# set up nanoc config
+cat << EOF >> $BUILD_DIR/static.json
+{
+  "root": "output/"
+}
+EOF
