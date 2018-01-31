@@ -7,8 +7,6 @@ set -e
 set -o pipefail
 
 BUILD_DIR=$1
-CACHE_DIR=$2
-OUTPUT_DIR=$CACHE_DIR/site/output
 
 # Work in the build directory
 cd $BUILD_DIR
@@ -39,9 +37,6 @@ echo "-----> Compiling nanoc site"
 
 # go go gadget nanoc!
 bundle exec nanoc compile | indent
-
-# and copy it back
-cp -r $OUTPUT_DIR $BUILD_DIR/output
 
 # set up nanoc config
 cat << EOF >> $BUILD_DIR/static.json
